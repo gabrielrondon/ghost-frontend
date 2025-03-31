@@ -41,19 +41,15 @@ export const principalToAccountIdentifier = (principal: Principal, subAccount?: 
   // Ensure the principal is included in the account identifier
   const principalBytes = principal.toUint8Array();
   
-  // Use the sha224 function directly - it doesn't have a create() method
-  // First prepare our message with all the required parts
+  // Prepare message components
   const prefix = new Uint8Array([10]); // Prefix for account IDs
   const label = new TextEncoder().encode("account-id");
   const defaultSubAccount = new Uint8Array(32).fill(0);
+  const subAccountToUse = subAccount || defaultSubAccount;
   
   // Concatenate all parts for hashing
-  const message = new Uint8Array(
-    prefix.length + 
-    label.length +
-    principalBytes.length +
-    (subAccount ? subAccount.length : defaultSubAccount.length)
-  );
+  const messageLength = prefix.length + label.length + principalBytes.length + subAccountToUse.length;
+  const message = new Uint8Array(messageLength);
   
   let offset = 0;
   message.set(prefix, offset);
@@ -62,16 +58,23 @@ export const principalToAccountIdentifier = (principal: Principal, subAccount?: 
   offset += label.length;
   message.set(principalBytes, offset);
   offset += principalBytes.length;
-  message.set(subAccount || defaultSubAccount, offset);
+  message.set(subAccountToUse, offset);
   
   // Generate hash using sha224
   const hash = sha224(message);
   const checksum = getCrc32(hash);
   
   // Combine checksum and hash to create account ID
-  const accountId = new Uint8Array(checksum.length + hash.length);
-  accountId.set(checksum, 0);
-  accountId.set(hash, checksum.length);
+  const checksumArray = new Uint8Array(4);
+  checksumArray[0] = checksum >> 24 & 0xFF;
+  checksumArray[1] = checksum >> 16 & 0xFF;
+  checksumArray[2] = checksum >> 8 & 0xFF;
+  checksumArray[3] = checksum & 0xFF;
+  
+  // Create the final account identifier
+  const accountId = new Uint8Array(checksumArray.length + hash.length);
+  accountId.set(checksumArray, 0);
+  accountId.set(hash, checksumArray.length);
 
   console.log("Created account identifier with proper checksum:", Array.from(accountId));
   
