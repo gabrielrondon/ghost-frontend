@@ -18,6 +18,11 @@ interface Token {
 // ICP Ledger Canister ID
 const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 
+// Interface for the Tokens type returned by the ICP ledger
+interface Tokens {
+  e8s: bigint;
+}
+
 // Simple IDL for the ICP Ledger canister account_balance method
 const icpLedgerIDL = ({ IDL }) => {
   const AccountIdentifier = IDL.Vec(IDL.Nat8);
@@ -88,7 +93,9 @@ export function useWallet() {
       console.log("Account identifier created:", accountId);
 
       // Create an actor to interact with the ICP Ledger using Actor.createActor instead of agent.createActor
-      const icpLedger = await Actor.createActor(icpLedgerIDL, {
+      const icpLedger: ActorSubclass<{
+        account_balance: (accountId: number[]) => Promise<Tokens>
+      }> = await Actor.createActor(icpLedgerIDL, {
         agent,
         canisterId: LEDGER_CANISTER_ID,
       });
