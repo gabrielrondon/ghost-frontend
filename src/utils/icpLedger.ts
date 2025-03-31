@@ -41,20 +41,26 @@ export const principalToAccountIdentifier = (principal: Principal, subAccount?: 
   // Ensure the principal is included in the account identifier
   const principalBytes = principal.toUint8Array();
   
-  // Standard ICP ledger account identifier calculation
-  const padding = new Uint8Array(32 - principalBytes.length);
-  const shaObj = sha224();
-  shaObj.update(new Uint8Array([10]));
-  shaObj.update(new TextEncoder().encode("account-id"));
+  // Create a new instance of sha224 hasher
+  const shaObj = sha224.create();
+  
+  // Concatenate byte arrays for hashing
+  const prefix = new Uint8Array([10]); // Prefix for account IDs
+  const label = new TextEncoder().encode("account-id");
+  
+  // Update the hash with all parts
+  shaObj.update(prefix);
+  shaObj.update(label);
   shaObj.update(principalBytes);
   shaObj.update(subAccount || new Uint8Array(32).fill(0)); // default subAccount to all 0s
   
   const hash = shaObj.digest();
   const checksum = getCrc32(hash);
   
+  // Combine checksum and hash to create account ID
   const accountId = new Uint8Array([
-    ...checksum,
-    ...hash
+    ...Array.from(checksum),
+    ...Array.from(hash)
   ]);
 
   console.log("Created account identifier with proper checksum:", Array.from(accountId));

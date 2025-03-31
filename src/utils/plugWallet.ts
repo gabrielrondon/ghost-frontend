@@ -80,12 +80,16 @@ export const getPlugAgent = async (): Promise<HttpAgent | null> => {
       });
     }
 
-    // Ensure the agent has the correct host
-    if (window.ic?.plug?.agent && window.ic.plug.agent.host !== IC_HOST) {
-      console.warn("Plug agent host mismatch, recreating agent with correct host");
+    // Check if agent needs recreation by examining how it was configured
+    // We can't directly access the host property, so handle differently
+    try {
+      const currentAgent = window.ic?.plug?.agent;
+      // Force recreation to ensure host is set correctly
       await window.ic?.plug?.createAgent({
         host: IC_HOST,
       });
+    } catch (error) {
+      console.warn("Error recreating Plug agent:", error);
     }
 
     return window.ic?.plug?.agent || null;
