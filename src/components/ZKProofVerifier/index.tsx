@@ -111,7 +111,7 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-xl font-semibold">
             <ShieldIcon className="h-5 w-5" />
-            ZK Proof Verifier
+            ZK Proof Verifier (Available Soon - Milestone 2)
           </div>
           <p className="text-purple-200 text-sm">
             Verify a ZK proof without revealing the actual token balance
