@@ -21,7 +21,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-950 to-purple-900">
       <div className="w-full max-w-md px-4">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-white mb-2">Internet Computer Wallet</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Ghost - Internet Computer</h1>
           <p className="text-purple-200">Connect your wallet to view your token balances</p>
         </div>
         
