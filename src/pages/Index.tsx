@@ -2,6 +2,7 @@
 import { useState } from "react";
 import WalletConnect from "@/components/WalletConnect";
 import TokenBalances from "@/components/TokenBalances";
+import ZKProofGenerator from "@/components/ZKProofGenerator";
 import { useWallet } from "@/hooks/useWallet";
 import { AuthProvider } from "@/services/authService";
 
@@ -10,7 +11,8 @@ const Index = () => {
     connected, 
     principal, 
     balances, 
-    isRefreshing, 
+    isRefreshing,
+    agent, 
     authProvider,
     connect, 
     disconnect, 
@@ -45,6 +47,13 @@ const Index = () => {
               balances={balances} 
               isRefreshing={isRefreshing}
               onRefresh={refreshBalance} 
+            />
+            
+            {/* Add ZK Proof Generator */}
+            <ZKProofGenerator 
+              agent={agent} 
+              principal={principal} 
+              tokens={balances} 
             />
           </div>
         )}

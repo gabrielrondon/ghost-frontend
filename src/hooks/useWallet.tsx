@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -165,6 +166,7 @@ export function useWallet() {
     connected,
     principal,
     identity,
+    agent, // Expose the agent for ZK proof interactions
     balances,
     isRefreshing,
     authProvider,
