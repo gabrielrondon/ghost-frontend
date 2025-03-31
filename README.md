@@ -1,69 +1,129 @@
-# Welcome to your Lovable project
 
-## Project info
+# Ghost - ZK Notary Agent
 
-**URL**: https://lovable.dev/projects/7826484f-30c6-4e80-88b3-5b1db1855efc
+![Ghost](./public/ghost-icon.svg)
 
-## How can I edit this code?
+A Zero-Knowledge Proof system for private attestations on the Internet Computer.
 
-There are several ways of editing your application.
+## 🎯 Milestone 1: MVP - Core Proof System
 
-**Use Lovable**
+This project has successfully completed Milestone 1, which involved creating a minimum viable product (MVP) for a Zero-Knowledge Proof (ZKP) system that enables private attestations on the Internet Computer.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7826484f-30c6-4e80-88b3-5b1db1855efc) and start prompting.
+### Deliverables
 
-Changes made via Lovable will be committed automatically to this repo.
+✅ **Canister-based ZK Proof System:**
+- Implemented a Web UI interface to the ZK Proof canister on the Internet Computer
+- Successfully integrated with the canister ID: `hi7bu-myaaa-aaaad-aaloa-cai`
+- Enables generating and verifying Zero-Knowledge Proofs for token ownership
 
-**Use your preferred IDE**
+✅ **Simple Frontend for Proof Requests:**
+- Created an intuitive web interface where users can:
+  - Connect their Internet Computer wallet
+  - Generate a ZK proof for token ownership
+  - Access a shareable verification link
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+✅ **Anonymous Reference Generation:**
+- Each generated proof produces a unique, shareable link
+- Third parties can verify proof validity without revealing the user's identity or token details
+- Proof links maintain privacy while confirming attestations
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+✅ **End-to-End Testing:**
+- Implemented a comprehensive test suite that validates:
+  - Proof generation
+  - Proof verification by the original wallet
+  - Anonymous verification via shareable links
 
-Follow these steps:
+### Definition of Done
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Each deliverable has been verified to meet its success criteria:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. **ZK Proof System:** The system successfully interfaces with the Internet Computer canister to generate valid Zero-Knowledge Proofs based on user input.
 
-# Step 3: Install the necessary dependencies.
-npm i
+2. **Frontend Interface:** Users can seamlessly connect their wallet, select their token, and request a ZK proof through an intuitive UI.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+3. **Anonymous References:** Each proof generates a unique, shareable verification link that maintains privacy while enabling third-party verification.
 
-**Edit a file directly in GitHub**
+4. **Testing:** The system includes a test suite that validates the complete proof lifecycle from generation to verification.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🧪 ZK Canister
 
-**Use GitHub Codespaces**
+While not part of this repository, this application interfaces with the Zero-Knowledge Proof canister deployed on the Internet Computer.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Canister Details
 
-## What technologies are used for this project?
+- **Canister ID:** `hi7bu-myaaa-aaaad-aaloa-cai`
+- **Network:** Internet Computer Mainnet
 
-This project is built with .
+### Canister Capabilities
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The ZK canister provides the following functionality:
 
-## How can I deploy this project?
+- **Proving Ownership:** Generates cryptographic proofs that verify a user possesses or owns specific tokens without revealing the token identity or balance details
+- **Verification:** Allows any party to verify the validity of a proof without learning the underlying token information
+- **Privacy Preservation:** Maintains complete privacy of token details while providing attestation capabilities
 
-Simply open [Lovable](https://lovable.dev/projects/7826484f-30c6-4e80-88b3-5b1db1855efc) and click on Share -> Publish.
+The canister uses advanced cryptographic techniques to create Zero-Knowledge Proofs that enable selective disclosure - users can prove properties about their tokens without revealing any other information.
 
-## I want to use a custom domain - is that possible?
+## 👤 User Flow
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+1. **Connect Wallet**
+   - User visits the application and connects their Internet Computer wallet
+   - Application requests necessary permissions to read token balances
+
+2. **Generate Proof**
+   - User selects a token for which they want to generate a proof
+   - User clicks "Generate ZK Proof" button
+   - Application communicates with the ZK canister to create the proof
+   - Upon success, a shareable verification link is generated
+
+3. **Share Proof**
+   - User receives a unique proof link that can be shared with any third party
+   - The link contains a reference to the proof but reveals no private information
+
+4. **Verify Proof**
+   - Third party accesses the verification link
+   - Application anonymously verifies the proof's validity with the ZK canister
+   - Verification result is displayed without revealing the token details
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or later)
+- npm or yarn
+
+### Installation
+
+1. Clone this repository:
+   ```
+   git clone <your-repository-url>
+   cd ghost-zk-notary
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+
+3. Start the development server:
+   ```
+   npm run dev
+   ```
+
+4. Open your browser and navigate to:
+   ```
+   http://localhost:8080
+   ```
+
+## 🔮 Future Work (Milestone 2)
+
+The next milestone will focus on enhancing the system with:
+
+- AI-based proof summarization
+- Enhanced verification interfaces
+- Additional use cases beyond token ownership
+- Expanded documentation and community resources
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

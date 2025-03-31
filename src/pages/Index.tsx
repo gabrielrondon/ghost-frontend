@@ -1,84 +1,68 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { HttpAgent, Identity } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import WalletConnect from "@/components/WalletConnect";
-import TokenBalances from "@/components/TokenBalances";
 import ZKProofGenerator from "@/components/ZKProofGenerator";
+import TokenBalances from "@/components/TokenBalances";
 import { useWallet } from "@/hooks/useWallet";
-import { AuthProvider } from "@/services/authService";
-import { Button } from "@/components/ui/button";
-import { PlayCircle } from "lucide-react";
+import { fetchTokenBalances } from "@/services/balanceService";
+import { Token } from "@/utils/icpLedger";
+import Header from "@/components/Header";
 
 const Index = () => {
-  const { 
-    connected, 
-    principal, 
-    balances, 
-    isRefreshing,
-    agent, 
-    authProvider,
-    connect, 
-    disconnect, 
-    refreshBalance 
-  } = useWallet();
-  const navigate = useNavigate();
+  const { identity, principal, agent, isConnecting } = useWallet();
+  const [tokens, setTokens] = useState<Token[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const loadBalances = async () => {
+      if (agent && principal) {
+        setIsLoading(true);
+        try {
+          const fetchedTokens = await fetchTokenBalances(agent, Principal.fromText(principal));
+          setTokens(fetchedTokens);
+        } catch (error) {
+          console.error("Failed to fetch token balances:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadBalances();
+  }, [agent, principal]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-950 to-purple-900">
-      <div className="w-full max-w-md px-4">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-white mb-2">Ghost - Internet Computer</h1>
-          <p className="text-purple-200">Connect your wallet to view your token balances</p>
-        </div>
-        
-        {!connected ? (
-          <WalletConnect connect={connect} />
-        ) : (
-          <div className="space-y-6 w-full">
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 text-white text-center">
-              <p className="text-sm text-purple-200">
-                Connected with {authProvider === AuthProvider.InternetIdentity ? 'Internet Identity' : 'Plug Wallet'}
-              </p>
-              <p className="text-xs font-mono break-all mt-1">{principal}</p>
-              <div className="flex justify-center space-x-2 mt-3">
-                <button 
-                  onClick={disconnect}
-                  className="text-xs text-purple-300 hover:text-white transition-colors"
-                >
-                  Disconnect
-                </button>
-                <span className="text-xs text-purple-500">|</span>
-                <button 
-                  onClick={() => navigate('/test')}
-                  className="text-xs text-purple-300 hover:text-white transition-colors flex items-center"
-                >
-                  <PlayCircle className="h-3 w-3 mr-1" />
-                  Run Tests
-                </button>
-              </div>
-            </div>
-            <TokenBalances 
-              balances={balances} 
-              isRefreshing={isRefreshing}
-              onRefresh={refreshBalance} 
-            />
-            
-            <ZKProofGenerator 
-              agent={agent} 
-              principal={principal} 
-              tokens={balances} 
-            />
-            
-            <Button
-              variant="outline"
-              className="w-full bg-white/10 border-purple-400 text-purple-100 hover:bg-white/20 hover:text-white"
-              onClick={() => navigate('/test')}
-            >
-              <PlayCircle className="mr-2 h-4 w-4" />
-              Run ZK Proof Tests
-            </Button>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-purple-900 text-white">
+      <Header />
+      <div className="container py-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="md:col-span-4">
+            <WalletConnect />
           </div>
-        )}
+          <div className="md:col-span-8">
+            {principal ? (
+              <div className="space-y-6">
+                <TokenBalances tokens={tokens} isLoading={isLoading} />
+                <ZKProofGenerator 
+                  agent={agent as HttpAgent | null} 
+                  principal={principal} 
+                  tokens={tokens} 
+                />
+              </div>
+            ) : (
+              <Card className="bg-white/10 backdrop-blur-lg">
+                <CardContent className="py-10 text-center">
+                  <p className="text-lg text-purple-200">
+                    Connect your wallet to generate ZK proofs
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
