@@ -10,7 +10,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
-import { Ghost } from "lucide-react";
+import { Ghost, Github } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface HeaderProps {
@@ -51,31 +51,56 @@ const Header = ({ title = "Ghost - ZK Notary Agent" }: HeaderProps) => {
                 </Button>
               </Link>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link to="/about">
+                <Button variant="ghost" className="text-white hover:text-purple-200 hover:bg-white/10">
+                  About
+                </Button>
+              </Link>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
         
-        <div className="flex md:hidden">
-          <Button 
-            variant="ghost" 
-            className="text-white hover:text-purple-200 hover:bg-white/10"
-            onClick={() => navigate('/')}
+        <div className="flex items-center gap-4">
+          <a 
+            href="https://github.com/ZKNotary/ghost" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-white hover:text-purple-200 transition-colors"
           >
-            Home
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="text-white hover:text-purple-200 hover:bg-white/10"
-            onClick={() => navigate('/test')}
-          >
-            Test
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="text-white hover:text-purple-200 hover:bg-white/10"
-            onClick={() => navigate('/verify')}
-          >
-            Verify
-          </Button>
+            <Github className="h-6 w-6" />
+          </a>
+          
+          <div className="flex md:hidden">
+            <Button 
+              variant="ghost" 
+              className="text-white hover:text-purple-200 hover:bg-white/10"
+              onClick={() => navigate('/')}
+            >
+              Home
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white hover:text-purple-200 hover:bg-white/10"
+              onClick={() => navigate('/test')}
+            >
+              Test
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white hover:text-purple-200 hover:bg-white/10"
+              onClick={() => navigate('/verify')}
+            >
+              Verify
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white hover:text-purple-200 hover:bg-white/10"
+              onClick={() => navigate('/about')}
+            >
+              About
+            </Button>
+          </div>
         </div>
       </div>
     </header>

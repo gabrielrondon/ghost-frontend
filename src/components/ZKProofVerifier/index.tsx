@@ -7,6 +7,8 @@ import { toast } from "@/components/ui/use-toast";
 import VerifierCard from "./VerifierCard";
 import VerifierForm from "./VerifierForm";
 import VerificationResult from "./VerificationResult";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 interface ZKProofVerifierProps {
   proofId?: string;
@@ -92,6 +94,17 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
 
   return (
     <VerifierCard>
+      <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10 text-yellow-600">
+        <InfoIcon className="h-5 w-5 text-yellow-600" />
+        <AlertTitle className="text-yellow-600 font-medium">Enhanced Verification Coming in Milestone 2</AlertTitle>
+        <AlertDescription className="text-yellow-600/90">
+          In the upcoming release, this tool will be enhanced with AI-based proof summarization and advanced verification capabilities. 
+          You'll be able to verify that a user holds more than 20 ICP tokens without revealing their exact balance, 
+          confirm membership in a DAO without disclosing identity, or validate token ownership within a specific timeframe - 
+          all while maintaining complete privacy of sensitive data.
+        </AlertDescription>
+      </Alert>
+      
       <VerifierForm 
         proofId={proofId} 
         setProofId={setProofId} 
