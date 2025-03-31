@@ -1,7 +1,7 @@
 
 import { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import { generateZKProof, verifyZKProof, ZKProofResponse } from "@/services/zkProofService";
+import { generateZKProof, verifyZKProof, ZKProofResponse } from "@/services/zkProof";
 import { createAgent } from "@/services/authService";
 import { Token } from "@/utils/icpLedger";
 

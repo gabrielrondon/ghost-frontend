@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, Share, Shield, Copy, Link } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { generateZKProof, ZKProofResponse } from "@/services/zkProofService";
+import { generateZKProof, ZKProofResponse } from "@/services/zkProof";
 import { Token } from "@/utils/icpLedger";
 
 interface ZKProofGeneratorProps {

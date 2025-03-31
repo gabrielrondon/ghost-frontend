@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, Shield, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { verifyZKProof } from "@/services/zkProofService";
+import { verifyZKProof } from "@/services/zkProof";
 import { createAgent } from "@/services/authService";
 
 interface ZKProofVerifierProps {
