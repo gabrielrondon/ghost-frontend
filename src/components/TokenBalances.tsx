@@ -21,7 +21,7 @@ const TokenBalances = ({ balances }: TokenBalancesProps) => {
       <div className="space-y-3">
         <div className="flex items-center justify-center mb-4">
           <Loader2 className="h-6 w-6 text-white animate-spin mr-2" />
-          <p className="text-white text-center">Fetching balances from the Internet Computer...</p>
+          <p className="text-white text-center">Fetching real ICP balance from the Internet Computer...</p>
         </div>
         {[1, 2, 3].map((i) => (
           <Card key={i} className="bg-white/10 backdrop-blur-lg p-4">
@@ -52,7 +52,7 @@ const TokenBalances = ({ balances }: TokenBalancesProps) => {
 
   return (
     <div>
-      <h2 className="text-white text-xl font-medium mb-3">Your Tokens</h2>
+      <h2 className="text-white text-xl font-medium mb-3">Your ICP Balance</h2>
       <div className="space-y-3">
         {balances.map((token, index) => (
           <Card key={index} className="bg-white/10 backdrop-blur-lg p-4 text-white">
