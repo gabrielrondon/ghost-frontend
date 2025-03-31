@@ -1,10 +1,13 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import WalletConnect from "@/components/WalletConnect";
 import TokenBalances from "@/components/TokenBalances";
 import ZKProofGenerator from "@/components/ZKProofGenerator";
 import { useWallet } from "@/hooks/useWallet";
 import { AuthProvider } from "@/services/authService";
+import { Button } from "@/components/ui/button";
+import { PlayCircle } from "lucide-react";
 
 const Index = () => {
   const { 
@@ -18,6 +21,7 @@ const Index = () => {
     disconnect, 
     refreshBalance 
   } = useWallet();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-950 to-purple-900">
@@ -36,12 +40,22 @@ const Index = () => {
                 Connected with {authProvider === AuthProvider.InternetIdentity ? 'Internet Identity' : 'Plug Wallet'}
               </p>
               <p className="text-xs font-mono break-all mt-1">{principal}</p>
-              <button 
-                onClick={disconnect}
-                className="mt-3 text-xs text-purple-300 hover:text-white transition-colors"
-              >
-                Disconnect
-              </button>
+              <div className="flex justify-center space-x-2 mt-3">
+                <button 
+                  onClick={disconnect}
+                  className="text-xs text-purple-300 hover:text-white transition-colors"
+                >
+                  Disconnect
+                </button>
+                <span className="text-xs text-purple-500">|</span>
+                <button 
+                  onClick={() => navigate('/test')}
+                  className="text-xs text-purple-300 hover:text-white transition-colors flex items-center"
+                >
+                  <PlayCircle className="h-3 w-3 mr-1" />
+                  Run Tests
+                </button>
+              </div>
             </div>
             <TokenBalances 
               balances={balances} 
@@ -49,12 +63,20 @@ const Index = () => {
               onRefresh={refreshBalance} 
             />
             
-            {/* Add ZK Proof Generator */}
             <ZKProofGenerator 
               agent={agent} 
               principal={principal} 
               tokens={balances} 
             />
+            
+            <Button
+              variant="outline"
+              className="w-full bg-white/10 border-purple-400 text-purple-100 hover:bg-white/20 hover:text-white"
+              onClick={() => navigate('/test')}
+            >
+              <PlayCircle className="mr-2 h-4 w-4" />
+              Run ZK Proof Tests
+            </Button>
           </div>
         )}
       </div>
