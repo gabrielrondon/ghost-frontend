@@ -1,6 +1,19 @@
 
 import { AuthClient } from "@dfinity/auth-client";
 import { HttpAgent, Identity } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
+import { 
+  isPlugInstalled, 
+  connectPlug, 
+  getPlugAgent, 
+  getPlugPrincipal,
+  disconnectPlug
+} from "@/utils/plugWallet";
+
+export enum AuthProvider {
+  InternetIdentity = "internet_identity",
+  Plug = "plug"
+}
 
 /**
  * Creates an authenticated HTTP agent for interacting with Internet Computer canisters
@@ -48,4 +61,38 @@ export const login = async (
  */
 export const logout = async (authClient: AuthClient): Promise<void> => {
   await authClient.logout();
+};
+
+/**
+ * Connect using Plug wallet
+ */
+export const connectWithPlug = async (canisterIds: string[] = []): Promise<{
+  agent: HttpAgent;
+  principal: Principal;
+}> => {
+  if (!isPlugInstalled()) {
+    throw new Error("Plug wallet is not installed");
+  }
+
+  const connected = await connectPlug(canisterIds);
+  
+  if (!connected) {
+    throw new Error("Failed to connect to Plug wallet");
+  }
+  
+  const agent = await getPlugAgent();
+  const principal = await getPlugPrincipal();
+  
+  if (!agent || !principal) {
+    throw new Error("Failed to get Plug wallet agent or principal");
+  }
+  
+  return { agent, principal };
+};
+
+/**
+ * Disconnect from Plug wallet
+ */
+export const disconnectFromPlug = async (): Promise<void> => {
+  await disconnectPlug();
 };

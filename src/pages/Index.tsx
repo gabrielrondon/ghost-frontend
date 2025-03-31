@@ -3,9 +3,19 @@ import { useState } from "react";
 import WalletConnect from "@/components/WalletConnect";
 import TokenBalances from "@/components/TokenBalances";
 import { useWallet } from "@/hooks/useWallet";
+import { AuthProvider } from "@/services/authService";
 
 const Index = () => {
-  const { connected, principal, balances, isRefreshing, connect, disconnect, refreshBalance } = useWallet();
+  const { 
+    connected, 
+    principal, 
+    balances, 
+    isRefreshing, 
+    authProvider,
+    connect, 
+    disconnect, 
+    refreshBalance 
+  } = useWallet();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-950 to-purple-900">
@@ -20,7 +30,9 @@ const Index = () => {
         ) : (
           <div className="space-y-6 w-full">
             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 text-white text-center">
-              <p className="text-sm text-purple-200">Connected as</p>
+              <p className="text-sm text-purple-200">
+                Connected with {authProvider === AuthProvider.InternetIdentity ? 'Internet Identity' : 'Plug Wallet'}
+              </p>
               <p className="text-xs font-mono break-all mt-1">{principal}</p>
               <button 
                 onClick={disconnect}
