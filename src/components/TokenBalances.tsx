@@ -14,12 +14,13 @@ interface Token {
 
 interface TokenBalancesProps {
   balances: Token[] | null;
+  isLoading?: boolean;
   isRefreshing?: boolean;
   onRefresh?: () => void;
 }
 
-const TokenBalances = ({ balances, isRefreshing = false, onRefresh }: TokenBalancesProps) => {
-  if (!balances) {
+const TokenBalances = ({ balances, isLoading = false, isRefreshing = false, onRefresh }: TokenBalancesProps) => {
+  if (!balances || isLoading) {
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-center mb-4">
