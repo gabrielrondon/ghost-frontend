@@ -86,24 +86,35 @@ export const connectWithPlug = async (canisterIds: string[] = []): Promise<{
   agent: HttpAgent;
   principal: Principal;
 }> => {
-  if (!isPlugInstalled()) {
-    throw new Error("Plug wallet is not installed");
-  }
+  try {
+    if (!isPlugInstalled()) {
+      throw new Error("Plug wallet is not installed");
+    }
 
-  const connected = await connectPlug(canisterIds);
-  
-  if (!connected) {
-    throw new Error("Failed to connect to Plug wallet");
+    const connected = await connectPlug(canisterIds);
+    
+    if (!connected) {
+      throw new Error("Failed to connect to Plug wallet");
+    }
+    
+    const agent = await getPlugAgent();
+    if (!agent) {
+      throw new Error("Failed to get Plug wallet agent");
+    }
+    
+    const principal = await getPlugPrincipal();
+    if (!principal) {
+      throw new Error("Failed to get Plug wallet principal");
+    }
+    
+    console.log("Successfully connected to Plug wallet with principal:", principal.toString());
+    
+    return { agent, principal };
+  } catch (error) {
+    console.error("Failed to connect to Plug:", error);
+    // Re-throw the error to be handled by the caller
+    throw error;
   }
-  
-  const agent = await getPlugAgent();
-  const principal = await getPlugPrincipal();
-  
-  if (!agent || !principal) {
-    throw new Error("Failed to get Plug wallet agent or principal");
-  }
-  
-  return { agent, principal };
 };
 
 /**

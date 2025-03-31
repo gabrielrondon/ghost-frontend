@@ -1,9 +1,13 @@
 
-import { HttpAgent, Identity } from "@dfinity/agent";
+import { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 
 // IC mainnet host URL
 const IC_HOST = "https://ic0.app";
+
+// Whether we're in production (true) or development (false)
+const isProduction = process.env.NODE_ENV === 'production' || 
+                     window.location.hostname !== 'localhost';
 
 declare global {
   interface Window {
@@ -57,6 +61,7 @@ export const connectPlug = async (canisterIds: string[] = []): Promise<boolean> 
 
   try {
     // Always use the IC_HOST parameter and never rely on Plug's defaults
+    // Don't try to fetch root key in production which causes CORS errors
     return await window.ic?.plug?.requestConnect({
       whitelist: canisterIds,
       host: IC_HOST,
@@ -73,28 +78,31 @@ export const getPlugAgent = async (): Promise<HttpAgent | null> => {
   }
 
   try {
-    // Create the agent if it doesn't exist yet
-    if (!window.ic?.plug?.agent) {
-      await window.ic?.plug?.createAgent({
-        host: IC_HOST, // Always explicitly set the host
-      });
+    // Create the agent with explicit production host to avoid localhost connections
+    await window.ic?.plug?.createAgent({
+      host: IC_HOST, // Always use production IC host
+    });
+    
+    // Get the agent from plug
+    const agent = window.ic?.plug?.agent;
+    
+    // Skip root key fetching in production to avoid CORS errors
+    if (agent && !isProduction) {
+      try {
+        // Only fetch root key in development
+        await agent.fetchRootKey();
+        console.log("Plug agent root key fetched successfully");
+      } catch (fetchError) {
+        console.warn("Failed to fetch root key from Plug agent, calls may fail in development:", fetchError);
+      }
+    } else if (agent) {
+      console.log("Running in production, skipping Plug agent root key fetch");
     }
 
-    // Check if agent needs recreation by examining how it was configured
-    // We can't directly access the host property, so handle differently
-    try {
-      // Force recreation to ensure host is set correctly
-      await window.ic?.plug?.createAgent({
-        host: IC_HOST,
-      });
-    } catch (error) {
-      console.warn("Error recreating Plug agent:", error);
-    }
-
-    return window.ic?.plug?.agent || null;
+    return agent || null;
   } catch (error) {
     console.error("Error getting Plug agent:", error);
-    throw error;
+    return null; // Return null instead of throwing to avoid breaking the app
   }
 };
 
@@ -104,10 +112,15 @@ export const getPlugPrincipal = async (): Promise<Principal | null> => {
   }
 
   try {
-    return await window.ic?.plug?.getPrincipal() || null;
+    const principal = await window.ic?.plug?.getPrincipal();
+    if (principal) {
+      console.log("Retrieved Plug principal:", principal.toString());
+      return principal;
+    }
+    return null;
   } catch (error) {
     console.error("Error getting Plug principal:", error);
-    throw error;
+    return null; // Return null instead of throwing to avoid breaking the app
   }
 };
 
@@ -116,8 +129,9 @@ export const disconnectPlug = async (): Promise<void> => {
   
   try {
     await window.ic?.plug?.disconnect();
+    console.log("Successfully disconnected from Plug wallet");
   } catch (error) {
     console.error("Error disconnecting from Plug wallet:", error);
-    throw error;
+    // Don't throw here, just log the error
   }
 };
