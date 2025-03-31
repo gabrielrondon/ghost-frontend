@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import { Ghost } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,18 +7,18 @@ const About = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-purple-900 text-white">
       <Header title="Ghost - About" />
-      <div className="container py-12">
-        <div className="flex flex-col items-center text-center mb-12">
-          <Ghost className="h-24 w-24 text-purple-400 mb-6" />
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent mb-4">
+      <div className="container px-4 md:px-6 py-8 md:py-12">
+        <div className="flex flex-col items-center text-center mb-8 md:mb-12">
+          <Ghost className="h-16 md:h-24 w-16 md:w-24 text-purple-400 mb-4 md:mb-6" />
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent mb-3 md:mb-4">
             The Ghost Project
           </h1>
-          <p className="text-xl text-purple-100 max-w-3xl">
+          <p className="text-lg md:text-xl text-purple-100 max-w-3xl">
             Zero-Knowledge Proofs as a Service, Enhanced by AI
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
+        <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3 mb-8 md:mb-12">
           <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-purple-300">Our Vision</CardTitle>
@@ -54,7 +53,7 @@ const About = () => {
           </Card>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-xl p-8 backdrop-blur-sm mb-12">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-6 md:p-8 backdrop-blur-sm mb-8 md:mb-12">
           <h2 className="text-2xl font-semibold text-purple-300 mb-4">Our Roadmap</h2>
           
           <div className="mb-8">
@@ -78,7 +77,7 @@ const About = () => {
           </div>
         </div>
 
-        <div className="text-center">
+        <div className="text-center px-4">
           <h2 className="text-2xl font-semibold text-purple-300 mb-4">Join Our Community</h2>
           <p className="text-white/80 max-w-2xl mx-auto mb-6">
             We're building a community of developers, privacy advocates, and users who believe in the power of Zero-Knowledge technology. Whether you're a cryptographer, developer, or just interested in privacy, we welcome your contributions and ideas.
