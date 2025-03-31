@@ -8,7 +8,7 @@ import VerifierCard from "./VerifierCard";
 import VerifierForm from "./VerifierForm";
 import VerificationResult from "./VerificationResult";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, ShieldIcon } from "lucide-react";
 
 interface ZKProofVerifierProps {
   proofId?: string;
@@ -106,17 +106,29 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
       </Alert>
       
       <VerifierCard>
-        <VerifierForm 
-          proofId={proofId} 
-          setProofId={setProofId} 
-          handleVerifyProof={handleVerifyProof}
-          isVerifying={isVerifying}
-          agent={agent}
-        />
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-xl font-semibold">
+            <ShieldIcon className="h-5 w-5" />
+            ZK Proof Verifier
+          </div>
+          <p className="text-purple-200 text-sm">
+            Verify a ZK proof without revealing the actual token balance
+          </p>
+        </div>
         
-        {verificationResult !== null && (
-          <VerificationResult isValid={verificationResult} />
-        )}
+        <div className="mt-6">
+          <VerifierForm 
+            proofId={proofId} 
+            setProofId={setProofId} 
+            handleVerifyProof={handleVerifyProof}
+            isVerifying={isVerifying}
+            agent={agent}
+          />
+          
+          {verificationResult !== null && (
+            <VerificationResult isValid={verificationResult} />
+          )}
+        </div>
       </VerifierCard>
     </div>
   );
