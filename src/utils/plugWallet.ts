@@ -24,12 +24,26 @@ declare global {
 }
 
 export const isPlugInstalled = (): boolean => {
-  return window.ic?.plug !== undefined;
+  // Add more robust check with console logging
+  console.log("Checking if Plug wallet is installed...");
+  console.log("window.ic:", window.ic);
+  console.log("window.ic?.plug:", window.ic?.plug);
+  
+  // More reliable detection that waits for window.ic to be initialized
+  if (typeof window === 'undefined') return false;
+  
+  // Check for both window.ic and window.ic.plug to be defined
+  return Boolean(window.ic && window.ic.plug);
 };
 
 export const isPlugConnected = async (): Promise<boolean> => {
   if (!isPlugInstalled()) return false;
-  return window.ic?.plug?.isConnected() || false;
+  try {
+    return await window.ic?.plug?.isConnected() || false;
+  } catch (error) {
+    console.error("Error checking Plug connection status:", error);
+    return false;
+  }
 };
 
 export const connectPlug = async (canisterIds: string[] = []): Promise<boolean> => {
