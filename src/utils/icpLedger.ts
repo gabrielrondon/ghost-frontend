@@ -3,6 +3,8 @@ import { HttpAgent, Identity } from "@dfinity/agent";
 import { Actor, ActorSubclass } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { IDL } from "@dfinity/candid";
+import { sha224 } from "@dfinity/principal/lib/esm/utils/sha224";
+import { getCrc32 } from "@dfinity/principal/lib/esm/utils/getCrc";
 
 // ICP Ledger Canister ID
 export const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
@@ -32,22 +34,31 @@ export const icpLedgerIDL = ({ IDL }) => {
   });
 };
 
-// Convert principal to account identifier (subaccount 0)
-export const principalToAccountIdentifier = (principal: Principal): Array<number> => {
-  // This is a simplified version - in a real app, you'd use a proper conversion function
-  // that follows the ICP standard for account identifiers
+// Properly convert principal to account identifier with valid checksum
+export const principalToAccountIdentifier = (principal: Principal, subAccount?: Uint8Array): Uint8Array => {
   console.log("Converting principal to account ID:", principal.toString());
   
-  // For demo purposes, we'll create a deterministic byte array
-  // In a real implementation, you would use a proper conversion library
-  const bytes = [...new Uint8Array(principal.toUint8Array())];
+  // Ensure the principal is included in the account identifier
+  const principalBytes = principal.toUint8Array();
   
-  // Pad with zeros to make a 32-byte account identifier (simplified)
-  while (bytes.length < 32) {
-    bytes.push(0);
-  }
+  // Standard ICP ledger account identifier calculation
+  const padding = new Uint8Array(32 - principalBytes.length);
+  const shaObj = new sha224();
+  shaObj.update([...new Uint8Array([10]), ...new TextEncoder().encode("account-id")]);
+  shaObj.update([...principalBytes]);
+  shaObj.update(subAccount || new Uint8Array(32).fill(0)); // default subAccount to all 0s
   
-  return bytes.slice(0, 32);
+  const hash = shaObj.digest();
+  const checksum = getCrc32(hash);
+  
+  const accountId = new Uint8Array([
+    ...checksum,
+    ...hash
+  ]);
+
+  console.log("Created account identifier with proper checksum:", Array.from(accountId));
+  
+  return accountId;
 };
 
 // Format e8s (ICP's smallest unit) to ICP with proper decimal places

@@ -2,6 +2,9 @@
 import { HttpAgent, Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 
+// IC mainnet host URL
+const IC_HOST = "https://ic0.app";
+
 declare global {
   interface Window {
     ic?: {
@@ -54,6 +57,7 @@ export const connectPlug = async (canisterIds: string[] = []): Promise<boolean> 
   try {
     return await window.ic?.plug?.requestConnect({
       whitelist: canisterIds,
+      host: IC_HOST, // Use mainnet host
     }) || false;
   } catch (error) {
     console.error("Error connecting to Plug wallet:", error);
@@ -70,7 +74,7 @@ export const getPlugAgent = async (): Promise<HttpAgent | null> => {
     // Create the agent if it doesn't exist yet
     if (!window.ic?.plug?.agent) {
       await window.ic?.plug?.createAgent({
-        host: "https://ic0.app",
+        host: IC_HOST, // Use mainnet host
       });
     }
 

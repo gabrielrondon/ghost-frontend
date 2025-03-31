@@ -15,6 +15,9 @@ if (typeof window !== 'undefined' && typeof global === 'undefined') {
   (window as any).global = window;
 }
 
+// IC mainnet host URL
+const IC_HOST = "https://ic0.app";
+
 export enum AuthProvider {
   InternetIdentity = "internet_identity",
   Plug = "plug"
@@ -27,7 +30,7 @@ export const createAgent = async (identity: Identity): Promise<HttpAgent> => {
   // Create an agent using the identity
   const agent = new HttpAgent({ 
     identity, 
-    host: "https://ic0.app" // Mainnet
+    host: IC_HOST // Always use mainnet
   });
   
   // In production, we should verify the agent before using it

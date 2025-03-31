@@ -26,9 +26,9 @@ export const fetchICPBalance = async (
   try {
     console.log("Attempting to fetch ICP balance for:", userPrincipal.toString());
 
-    // Create account identifier from principal
+    // Create account identifier from principal with proper checksum
     const accountId = principalToAccountIdentifier(userPrincipal);
-    console.log("Account identifier created:", accountId);
+    console.log("Account identifier created:", Array.from(accountId));
 
     // Create an actor to interact with the ICP Ledger
     const icpLedger: ActorSubclass<{
@@ -43,7 +43,7 @@ export const fetchICPBalance = async (
     // Call the account_balance method with the correct format
     // The ICP ledger expects an object with an account property
     const balance = await icpLedger.account_balance({
-      account: new Uint8Array(accountId)
+      account: accountId
     });
     
     console.log("Received balance response:", balance);
