@@ -1,7 +1,6 @@
 
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ZKProofTestRunner from "@/components/ZKProofTestRunner";
+import ZKProofTestRunner from "@/components/ZKProofTest";
 import { useWallet } from "@/hooks/useWallet";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, AlertCircle } from "lucide-react";
