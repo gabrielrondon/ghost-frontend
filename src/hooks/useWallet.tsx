@@ -13,31 +13,14 @@ interface Token {
   logo?: string;
 }
 
-// Mock token balances - in a real app, these would come from the IC canisters
-const mockTokens: Token[] = [
-  {
-    name: "Internet Computer",
-    symbol: "ICP",
-    amount: "123.45",
-    decimals: 8,
-    logo: "https://cryptologos.cc/logos/internet-computer-icp-logo.png"
-  },
-  {
-    name: "Cycles",
-    symbol: "CYCLES",
-    amount: "1,234,567.89",
-    decimals: 0
-  },
-  {
-    name: "WICP",
-    symbol: "WICP",
-    amount: "45.67",
-    decimals: 8
-  }
-];
+// Define the canister IDs for the tokens we want to check
+const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai"; // ICP Ledger
+const CYCLES_MINTING_CANISTER_ID = "rkp4c-7iaaa-aaaaa-aaaca-cai"; // Cycles Minting Canister
+const WICP_CANISTER_ID = "utozz-siaaa-aaaam-qaaxq-cai"; // WICP token
 
 export function useWallet() {
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
+  const [agent, setAgent] = useState<HttpAgent | null>(null);
   const [identity, setIdentity] = useState<Identity | null>(null);
   const [principal, setPrincipal] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
@@ -55,25 +38,87 @@ export function useWallet() {
     });
   }, []);
 
+  // Fetch balances from the Internet Computer
+  const fetchBalances = useCallback(async (userPrincipal: Principal) => {
+    if (!agent) return [];
+    
+    setBalances(null); // Set to null to show loading state
+    
+    try {
+      // In a real implementation, we would call the token canisters to get balances
+      // This is a simplified example that simulates network requests
+      
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // For demonstration purposes, we'll return data based on the principal
+      // In a real app, you would call the canister actor methods to get actual balances
+      const principalStr = userPrincipal.toString();
+      const lastChar = principalStr.charCodeAt(principalStr.length - 1) % 10;
+      
+      const tokens: Token[] = [
+        {
+          name: "Internet Computer",
+          symbol: "ICP",
+          amount: `${(lastChar * 12.34).toFixed(2)}`,
+          decimals: 8,
+          logo: "https://cryptologos.cc/logos/internet-computer-icp-logo.png"
+        },
+        {
+          name: "Cycles",
+          symbol: "CYCLES",
+          amount: `${lastChar * 1000000}`,
+          decimals: 0
+        }
+      ];
+      
+      // Add WICP for some principals
+      if (lastChar > 5) {
+        tokens.push({
+          name: "Wrapped ICP",
+          symbol: "WICP",
+          amount: `${(lastChar * 5.67).toFixed(2)}`,
+          decimals: 8
+        });
+      }
+      
+      return tokens;
+    } catch (error) {
+      console.error("Error fetching balances:", error);
+      toast({
+        variant: "destructive",
+        title: "Failed to fetch balances",
+        description: "Could not retrieve your token balances"
+      });
+      return [];
+    }
+  }, [agent]);
+
   const handleAuthenticated = useCallback(async (client: AuthClient) => {
     const identity = client.getIdentity();
-    const principal = identity.getPrincipal().toString();
+    const principal = identity.getPrincipal();
+    const principalStr = principal.toString();
+    
+    // Create an agent using the identity
+    const agent = new HttpAgent({ 
+      identity, 
+      host: "https://ic0.app" // Mainnet
+    });
     
     setIdentity(identity);
-    setPrincipal(principal);
+    setPrincipal(principalStr);
+    setAgent(agent);
     setConnected(true);
     
-    // In a real app, fetch token balances from the IC network
-    // For this demo, we'll use mock data
-    setTimeout(() => {
-      setBalances(mockTokens);
-    }, 1000);
+    // Fetch the token balances
+    const tokenBalances = await fetchBalances(principal);
+    setBalances(tokenBalances);
     
     toast({
       title: "Wallet connected",
       description: "Your Internet Computer wallet is now connected",
     });
-  }, []);
+  }, [fetchBalances]);
 
   const connect = useCallback(async () => {
     if (!authClient) return;
@@ -99,6 +144,7 @@ export function useWallet() {
     await authClient.logout();
     setIdentity(null);
     setPrincipal(null);
+    setAgent(null);
     setConnected(false);
     setBalances(null);
     

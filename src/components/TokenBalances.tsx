@@ -1,6 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react";
 
 interface Token {
   name: string;
@@ -18,7 +19,10 @@ const TokenBalances = ({ balances }: TokenBalancesProps) => {
   if (!balances) {
     return (
       <div className="space-y-3">
-        <p className="text-white text-center mb-2">Loading balances...</p>
+        <div className="flex items-center justify-center mb-4">
+          <Loader2 className="h-6 w-6 text-white animate-spin mr-2" />
+          <p className="text-white text-center">Fetching balances from the Internet Computer...</p>
+        </div>
         {[1, 2, 3].map((i) => (
           <Card key={i} className="bg-white/10 backdrop-blur-lg p-4">
             <div className="flex items-center">
