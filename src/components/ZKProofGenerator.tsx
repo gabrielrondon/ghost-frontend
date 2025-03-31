@@ -211,7 +211,7 @@ const ZKProofGenerator = ({ agent, principal, tokens }: ZKProofGeneratorProps) =
                 <label className="text-sm font-medium text-purple-100">Generated At</label>
                 <Input
                   readOnly
-                  value={new Date(Number(proofResult.timestamp) / 1000000).toLocaleString()}
+                  value={new Date(proofResult.timestamp).toLocaleString()}
                   className="bg-white/10 border-purple-400 text-white"
                 />
               </div>
