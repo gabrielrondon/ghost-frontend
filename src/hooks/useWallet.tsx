@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { AuthClient } from "@dfinity/auth-client";
 import { HttpAgent, Identity } from "@dfinity/agent";
+import { Actor, ActorSubclass } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { toast } from "@/components/ui/use-toast";
 import { IDL } from "@dfinity/candid";
@@ -86,8 +87,9 @@ export function useWallet() {
       const accountId = principalToAccountIdentifier(userPrincipal);
       console.log("Account identifier created:", accountId);
 
-      // Create an actor to interact with the ICP Ledger
-      const icpLedger = await agent.createActor(icpLedgerIDL, {
+      // Create an actor to interact with the ICP Ledger using Actor.createActor instead of agent.createActor
+      const icpLedger = await Actor.createActor(icpLedgerIDL, {
+        agent,
         canisterId: LEDGER_CANISTER_ID,
       });
       
