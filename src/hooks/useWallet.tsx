@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -27,28 +26,12 @@ export function useWallet() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [authProvider, setAuthProvider] = useState<AuthProvider | null>(null);
 
-  // Initialize AuthClient and check for existing sessions
+  // Initialize AuthClient but don't auto-connect
   useEffect(() => {
     const initAuth = async () => {
-      // Check if already connected to Plug
-      if (await isPlugConnected()) {
-        try {
-          const { agent, principal } = await connectWithPlug();
-          handlePlugConnection(agent, principal);
-          return;
-        } catch (error) {
-          console.warn("Error connecting to existing Plug session:", error);
-        }
-      }
-
-      // Check Internet Identity
+      // Just initialize the auth client without automatically connecting
       const client = await createAuthClient();
       setAuthClient(client);
-      
-      // Check if user is already authenticated
-      if (client.isAuthenticated()) {
-        handleAuthenticated(client);
-      }
     };
 
     initAuth();
