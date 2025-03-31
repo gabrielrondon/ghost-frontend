@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@dfinity/agent": "^0.19.3",
+    "@dfinity/auth-client": "^0.19.3",
     "@dfinity/principal": "^0.19.3",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
