@@ -94,16 +94,18 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
 
   return (
     <div className="space-y-6">
-      <Alert className="border-yellow-500/50 bg-yellow-500/10 text-yellow-600">
-        <InfoIcon className="h-5 w-5 text-yellow-600" />
-        <AlertTitle className="text-yellow-600 font-medium">Enhanced Verification Coming in Milestone 2</AlertTitle>
-        <AlertDescription className="text-yellow-600/90">
-          In the upcoming release, this tool will be enhanced with AI-based proof summarization and advanced verification capabilities. 
-          You'll be able to verify that a user holds more than 20 ICP tokens without revealing their exact balance, 
-          confirm membership in a DAO without disclosing identity, or validate token ownership within a specific timeframe - 
+      <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-md p-4 text-yellow-600">
+        <h3 className="text-lg font-medium flex items-center mb-2">
+          <InfoIcon className="h-5 w-5 mr-2" />
+          Coming in Milestone 2
+        </h3>
+        <p className="text-sm">
+          In the upcoming release, this verification tool will be enhanced with AI-based proof summarization.
+          You'll be able to verify that a user holds more than 20 ICP tokens without revealing their exact balance,
+          confirm membership in a DAO without disclosing identity, or validate token ownership within a specific timeframe -
           all while maintaining complete privacy of sensitive data.
-        </AlertDescription>
-      </Alert>
+        </p>
+      </div>
       
       <VerifierCard>
         <div className="space-y-4">
