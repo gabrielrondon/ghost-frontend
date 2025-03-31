@@ -10,6 +10,11 @@ import {
   disconnectPlug
 } from "@/utils/plugWallet";
 
+// Polyfill global for browser environment
+if (typeof window !== 'undefined' && typeof global === 'undefined') {
+  (window as any).global = window;
+}
+
 export enum AuthProvider {
   InternetIdentity = "internet_identity",
   Plug = "plug"

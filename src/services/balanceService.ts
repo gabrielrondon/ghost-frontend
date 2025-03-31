@@ -11,6 +11,11 @@ import {
   Tokens 
 } from "@/utils/icpLedger";
 
+// Polyfill global for browser environment
+if (typeof window !== 'undefined' && typeof global === 'undefined') {
+  (window as any).global = window;
+}
+
 /**
  * Fetches the ICP balance for a principal from the ledger canister
  */
