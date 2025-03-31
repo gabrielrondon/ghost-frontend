@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { 
@@ -32,9 +32,13 @@ interface ZKProofTestRunnerProps {
 
 const ZKProofTestRunner = ({ agent, principal, tokens }: ZKProofTestRunnerProps) => {
   const [isRunningTests, setIsRunningTests] = useState(false);
-  const [testResults, setTestResults] = useState<TestSuiteResults | null>(
-    loadTestResults()
-  );
+  const [testResults, setTestResults] = useState<TestSuiteResults | null>(null);
+
+  // Load test results only when needed, not on initial render
+  useEffect(() => {
+    // We don't auto-load previous results anymore to prevent confusion
+    // Previous results are cleared when the TestZK page mounts
+  }, []);
 
   const handleRunTests = async (selectedToken: string) => {
     if (!agent || !principal || !selectedToken || !tokens) {

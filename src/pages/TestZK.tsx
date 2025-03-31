@@ -1,10 +1,12 @@
 
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ZKProofTestRunner from "@/components/ZKProofTest";
 import { useWallet } from "@/hooks/useWallet";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, AlertCircle } from "lucide-react";
 import WalletConnect from "@/components/WalletConnect";
+import { clearTestResults } from "@/utils/zkProofTesting";
 
 const TestZK = () => {
   const { 
@@ -15,6 +17,11 @@ const TestZK = () => {
     connect
   } = useWallet();
   const navigate = useNavigate();
+  
+  // Clear previous test results when the component mounts
+  useEffect(() => {
+    clearTestResults();
+  }, []);
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-950 to-purple-900">

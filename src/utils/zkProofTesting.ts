@@ -161,3 +161,8 @@ export const loadTestResults = (): TestSuiteResults | null => {
   const saved = localStorage.getItem('zkproof_test_results');
   return saved ? JSON.parse(saved) : null;
 };
+
+// Clear test results from localStorage
+export const clearTestResults = (): void => {
+  localStorage.removeItem('zkproof_test_results');
+};

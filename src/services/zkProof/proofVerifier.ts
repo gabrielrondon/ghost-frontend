@@ -33,19 +33,26 @@ export const verifyZKProof = async (
     const zkProofActor = await createZKProofActor(agent);
     console.log("Calling verify_proof on canister");
     
-    // Use query() directly without trying to access getPrincipal
-    // This is a critical fix for anonymous agents which don't have getPrincipal
-    const result = await zkProofActor.verify_proof(proofBytes);
-    console.log("Verification result:", result);
-    
-    if ('Err' in result) {
-      console.error("Error verifying proof:", result.Err);
-      return false;
+    // Critical fix for anonymous verification:
+    // For anonymous verification, directly call the verify_proof method
+    // instead of using query() which tries to access getPrincipal
+    try {
+      // Call the verify_proof method directly on the actor
+      const result = await zkProofActor.verify_proof(proofBytes);
+      console.log("Verification result:", result);
+      
+      if ('Err' in result) {
+        console.error("Error verifying proof:", result.Err);
+        return false;
+      }
+      
+      const isValid = result.Ok;
+      console.log("ZK proof verification result:", isValid);
+      return isValid;
+    } catch (error) {
+      console.error("Direct verification failed:", error);
+      throw error;
     }
-    
-    const isValid = result.Ok;
-    console.log("ZK proof verification result:", isValid);
-    return isValid;
   } catch (error) {
     console.error("Error verifying ZK proof:", error);
     toast({
