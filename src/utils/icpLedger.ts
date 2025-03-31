@@ -43,9 +43,10 @@ export const principalToAccountIdentifier = (principal: Principal, subAccount?: 
   
   // Standard ICP ledger account identifier calculation
   const padding = new Uint8Array(32 - principalBytes.length);
-  const shaObj = new sha224();
-  shaObj.update([...new Uint8Array([10]), ...new TextEncoder().encode("account-id")]);
-  shaObj.update([...principalBytes]);
+  const shaObj = sha224();
+  shaObj.update(new Uint8Array([10]));
+  shaObj.update(new TextEncoder().encode("account-id"));
+  shaObj.update(principalBytes);
   shaObj.update(subAccount || new Uint8Array(32).fill(0)); // default subAccount to all 0s
   
   const hash = shaObj.digest();

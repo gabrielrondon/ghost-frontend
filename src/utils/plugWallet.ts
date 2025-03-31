@@ -26,6 +26,7 @@ declare global {
   }
 }
 
+// This function safely checks if Plug is installed without making network requests
 export const isPlugInstalled = (): boolean => {
   // Add more robust check with console logging
   console.log("Checking if Plug wallet is installed...");
@@ -55,9 +56,10 @@ export const connectPlug = async (canisterIds: string[] = []): Promise<boolean> 
   }
 
   try {
+    // Always use the IC_HOST parameter and never rely on Plug's defaults
     return await window.ic?.plug?.requestConnect({
       whitelist: canisterIds,
-      host: IC_HOST, // Use mainnet host
+      host: IC_HOST,
     }) || false;
   } catch (error) {
     console.error("Error connecting to Plug wallet:", error);
@@ -74,7 +76,15 @@ export const getPlugAgent = async (): Promise<HttpAgent | null> => {
     // Create the agent if it doesn't exist yet
     if (!window.ic?.plug?.agent) {
       await window.ic?.plug?.createAgent({
-        host: IC_HOST, // Use mainnet host
+        host: IC_HOST, // Always explicitly set the host
+      });
+    }
+
+    // Ensure the agent has the correct host
+    if (window.ic?.plug?.agent && window.ic.plug.agent.host !== IC_HOST) {
+      console.warn("Plug agent host mismatch, recreating agent with correct host");
+      await window.ic?.plug?.createAgent({
+        host: IC_HOST,
       });
     }
 

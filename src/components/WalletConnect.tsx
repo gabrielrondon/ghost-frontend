@@ -16,11 +16,17 @@ const WalletConnect = ({ connect }: WalletConnectProps) => {
   useEffect(() => {
     // Give time for browser extensions to initialize
     const checkPlugTimer = setTimeout(() => {
-      const isPlug = isPlugInstalled();
-      console.log("Plug wallet detected:", isPlug);
-      setPlugAvailable(isPlug);
-      setCheckingPlug(false);
-    }, 500);
+      try {
+        const isPlug = isPlugInstalled();
+        console.log("Plug wallet detected:", isPlug);
+        setPlugAvailable(isPlug);
+      } catch (error) {
+        console.error("Error detecting Plug wallet:", error);
+        setPlugAvailable(false);
+      } finally {
+        setCheckingPlug(false);
+      }
+    }, 1000); // Increase timeout to ensure extension is fully loaded
 
     return () => clearTimeout(checkPlugTimer);
   }, []);

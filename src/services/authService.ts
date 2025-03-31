@@ -18,6 +18,9 @@ if (typeof window !== 'undefined' && typeof global === 'undefined') {
 // IC mainnet host URL
 const IC_HOST = "https://ic0.app";
 
+// Whether we're in production (true) or development (false)
+const isProduction = window.location.hostname !== 'localhost';
+
 export enum AuthProvider {
   InternetIdentity = "internet_identity",
   Plug = "plug"
@@ -33,12 +36,16 @@ export const createAgent = async (identity: Identity): Promise<HttpAgent> => {
     host: IC_HOST // Always use mainnet
   });
   
-  // In production, we should verify the agent before using it
-  try {
-    await agent.fetchRootKey(); // This should only be done in development
-    console.log("Agent root key fetched");
-  } catch (error) {
-    console.warn("Could not fetch root key, calls will fail in development:", error);
+  // Only fetch the root key in development
+  if (!isProduction) {
+    try {
+      await agent.fetchRootKey();
+      console.log("Agent root key fetched");
+    } catch (error) {
+      console.warn("Could not fetch root key, calls will fail in development:", error);
+    }
+  } else {
+    console.log("Running in production, skipping root key fetch");
   }
   
   return agent;
