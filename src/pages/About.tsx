@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import { Ghost } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -84,7 +85,7 @@ const About = () => {
           </p>
           <div className="flex justify-center gap-4">
             <a 
-              href="https://github.com/ZKNotary/ghost" 
+              href="https://github.com/gabrielrondon/ghost_dev" 
               target="_blank" 
               rel="noopener noreferrer"
               className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"

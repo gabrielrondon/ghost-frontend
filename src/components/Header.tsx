@@ -63,7 +63,7 @@ const Header = ({ title = "Ghost - ZK Notary Agent" }: HeaderProps) => {
         
         <div className="flex items-center gap-4">
           <a 
-            href="https://github.com/ZKNotary/ghost" 
+            href="https://github.com/gabrielrondon/ghost_dev" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-white hover:text-purple-200 transition-colors"
