@@ -83,7 +83,6 @@ export const getPlugAgent = async (): Promise<HttpAgent | null> => {
     // Check if agent needs recreation by examining how it was configured
     // We can't directly access the host property, so handle differently
     try {
-      const currentAgent = window.ic?.plug?.agent;
       // Force recreation to ensure host is set correctly
       await window.ic?.plug?.createAgent({
         host: IC_HOST,

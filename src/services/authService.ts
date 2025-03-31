@@ -19,7 +19,8 @@ if (typeof window !== 'undefined' && typeof global === 'undefined') {
 const IC_HOST = "https://ic0.app";
 
 // Whether we're in production (true) or development (false)
-const isProduction = window.location.hostname !== 'localhost';
+const isProduction = process.env.NODE_ENV === 'production' || 
+                     window.location.hostname !== 'localhost';
 
 export enum AuthProvider {
   InternetIdentity = "internet_identity",
