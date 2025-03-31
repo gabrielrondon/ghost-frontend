@@ -1,7 +1,8 @@
 
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, RefreshCw } from "lucide-react";
 
 interface Token {
   name: string;
@@ -13,9 +14,11 @@ interface Token {
 
 interface TokenBalancesProps {
   balances: Token[] | null;
+  isRefreshing?: boolean;
+  onRefresh?: () => void;
 }
 
-const TokenBalances = ({ balances }: TokenBalancesProps) => {
+const TokenBalances = ({ balances, isRefreshing = false, onRefresh }: TokenBalancesProps) => {
   if (!balances) {
     return (
       <div className="space-y-3">
@@ -52,7 +55,30 @@ const TokenBalances = ({ balances }: TokenBalancesProps) => {
 
   return (
     <div>
-      <h2 className="text-white text-xl font-medium mb-3">Your ICP Balance</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-white text-xl font-medium">Your ICP Balance</h2>
+        {onRefresh && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onRefresh} 
+            disabled={isRefreshing}
+            className="bg-white/10 border-purple-400 text-purple-100 hover:bg-white/20 hover:text-white"
+          >
+            {isRefreshing ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                Refreshing...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-1" />
+                Refresh
+              </>
+            )}
+          </Button>
+        )}
+      </div>
       <div className="space-y-3">
         {balances.map((token, index) => (
           <Card key={index} className="bg-white/10 backdrop-blur-lg p-4 text-white">

@@ -5,7 +5,7 @@ import TokenBalances from "@/components/TokenBalances";
 import { useWallet } from "@/hooks/useWallet";
 
 const Index = () => {
-  const { connected, principal, balances, connect, disconnect } = useWallet();
+  const { connected, principal, balances, isRefreshing, connect, disconnect, refreshBalance } = useWallet();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-950 to-purple-900">
@@ -29,7 +29,11 @@ const Index = () => {
                 Disconnect
               </button>
             </div>
-            <TokenBalances balances={balances} />
+            <TokenBalances 
+              balances={balances} 
+              isRefreshing={isRefreshing}
+              onRefresh={refreshBalance} 
+            />
           </div>
         )}
       </div>

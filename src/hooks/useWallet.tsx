@@ -63,6 +63,7 @@ export function useWallet() {
   const [principal, setPrincipal] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
   const [balances, setBalances] = useState<Token[] | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Initialize AuthClient
   useEffect(() => {
@@ -211,12 +212,37 @@ export function useWallet() {
     });
   }, [authClient]);
 
+  const refreshBalance = useCallback(async () => {
+    if (!connected || !principal || !identity || isRefreshing) return;
+    
+    setIsRefreshing(true);
+    try {
+      const tokenBalances = await fetchICPBalance(identity.getPrincipal());
+      setBalances(tokenBalances);
+      toast({
+        title: "Balance refreshed",
+        description: "Your ICP balance has been updated",
+      });
+    } catch (error) {
+      console.error("Error refreshing balance:", error);
+      toast({
+        variant: "destructive",
+        title: "Refresh failed",
+        description: "Could not refresh your ICP balance",
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [connected, principal, identity, fetchICPBalance, isRefreshing]);
+
   return {
     connected,
     principal,
     identity,
     balances,
+    isRefreshing,
     connect,
-    disconnect
+    disconnect,
+    refreshBalance
   };
 }
