@@ -93,8 +93,8 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
   };
 
   return (
-    <VerifierCard>
-      <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10 text-yellow-600">
+    <div className="space-y-6">
+      <Alert className="border-yellow-500/50 bg-yellow-500/10 text-yellow-600">
         <InfoIcon className="h-5 w-5 text-yellow-600" />
         <AlertTitle className="text-yellow-600 font-medium">Enhanced Verification Coming in Milestone 2</AlertTitle>
         <AlertDescription className="text-yellow-600/90">
@@ -105,18 +105,20 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
         </AlertDescription>
       </Alert>
       
-      <VerifierForm 
-        proofId={proofId} 
-        setProofId={setProofId} 
-        handleVerifyProof={handleVerifyProof}
-        isVerifying={isVerifying}
-        agent={agent}
-      />
-      
-      {verificationResult !== null && (
-        <VerificationResult isValid={verificationResult} />
-      )}
-    </VerifierCard>
+      <VerifierCard>
+        <VerifierForm 
+          proofId={proofId} 
+          setProofId={setProofId} 
+          handleVerifyProof={handleVerifyProof}
+          isVerifying={isVerifying}
+          agent={agent}
+        />
+        
+        {verificationResult !== null && (
+          <VerificationResult isValid={verificationResult} />
+        )}
+      </VerifierCard>
+    </div>
   );
 };
 
