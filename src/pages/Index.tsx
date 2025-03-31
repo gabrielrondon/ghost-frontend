@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { HttpAgent, Identity } from "@dfinity/agent";
+import { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import WalletConnect from "@/components/WalletConnect";
 import ZKProofGenerator from "@/components/ZKProofGenerator";
@@ -12,7 +12,15 @@ import { Token } from "@/utils/icpLedger";
 import Header from "@/components/Header";
 
 const Index = () => {
-  const { identity, principal, agent, isConnecting } = useWallet();
+  const { 
+    principal, 
+    agent, 
+    connected, 
+    balances: walletBalances, 
+    isRefreshing, 
+    refreshBalance,
+    connect
+  } = useWallet();
   const [tokens, setTokens] = useState<Token[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,12 +48,17 @@ const Index = () => {
       <div className="container py-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           <div className="md:col-span-4">
-            <WalletConnect />
+            <WalletConnect connect={connect} />
           </div>
           <div className="md:col-span-8">
             {principal ? (
               <div className="space-y-6">
-                <TokenBalances tokens={tokens} isLoading={isLoading} />
+                <TokenBalances 
+                  balances={tokens} 
+                  isLoading={isLoading}
+                  isRefreshing={isRefreshing}
+                  onRefresh={refreshBalance}
+                />
                 <ZKProofGenerator 
                   agent={agent as HttpAgent | null} 
                   principal={principal} 

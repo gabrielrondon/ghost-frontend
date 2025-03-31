@@ -82,3 +82,6 @@ export const fetchICPBalance = async (
     ];
   }
 };
+
+// Add this export to match the function name used in Index.tsx
+export const fetchTokenBalances = fetchICPBalance;
