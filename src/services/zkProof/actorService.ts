@@ -12,12 +12,27 @@ export const createZKProofActor = async (
   try {
     console.log("Creating ZK Proof actor");
     
+    // Check if the agent is anonymous (doesn't have getPrincipal method)
+    const isAnonymous = !agent.getPrincipal;
+    
+    // Create the actor with special options for anonymous verification
+    const actorOptions = {
+      agent,
+      canisterId: ZK_PROOF_CANISTER_ID,
+    };
+    
+    // If anonymous, add configuration to bypass authentication checks
+    if (isAnonymous) {
+      console.log("Configuring actor for anonymous verification");
+      // @ts-ignore - Adding custom options that might not be in the type definition
+      actorOptions.queryTransform = (args: any) => {
+        return { ...args, certified: false };
+      };
+    }
+    
     const actor: ActorSubclass<ZKProofCanister> = Actor.createActor(
       zkProofCanisterIDL,
-      {
-        agent,
-        canisterId: ZK_PROOF_CANISTER_ID,
-      }
+      actorOptions
     );
     
     console.log("ZK Proof actor created successfully");

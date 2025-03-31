@@ -33,13 +33,24 @@ export const verifyZKProof = async (
     const zkProofActor = await createZKProofActor(agent);
     console.log("Calling verify_proof on canister");
     
-    // Critical fix for anonymous verification:
-    // For anonymous verification, directly call the verify_proof method
-    // instead of using query() which tries to access getPrincipal
+    // Check if the agent has a getPrincipal method which indicates if it's anonymous or not
+    const isAnonymous = !agent.getPrincipal;
+    console.log(`Is anonymous agent: ${isAnonymous}`);
+    
+    // For all verification, use direct method call to avoid query() issues with anonymous agents
     try {
-      // Call the verify_proof method directly on the actor
-      const result = await zkProofActor.verify_proof(proofBytes);
-      console.log("Verification result:", result);
+      // Direct call to the verify_proof method on the actor
+      console.log("Calling verify_proof directly");
+      
+      // Access the underlying _service property which has the raw methods
+      // @ts-ignore - We need to bypass TypeScript's type checking here
+      const rawService = zkProofActor._service;
+      
+      // Call the raw method without using query() which has getPrincipal checks
+      // @ts-ignore - Direct access to internals
+      const result = await rawService.verify_proof(proofBytes);
+      
+      console.log("Raw verification result:", result);
       
       if ('Err' in result) {
         console.error("Error verifying proof:", result.Err);
@@ -51,7 +62,19 @@ export const verifyZKProof = async (
       return isValid;
     } catch (error) {
       console.error("Direct verification failed:", error);
-      throw error;
+      
+      // Fallback to traditional method if direct access fails
+      console.log("Falling back to traditional method");
+      const result = await zkProofActor.verify_proof(proofBytes);
+      
+      if ('Err' in result) {
+        console.error("Error in fallback verification:", result.Err);
+        return false;
+      }
+      
+      const isValid = result.Ok;
+      console.log("Fallback verification result:", isValid);
+      return isValid;
     }
   } catch (error) {
     console.error("Error verifying ZK proof:", error);

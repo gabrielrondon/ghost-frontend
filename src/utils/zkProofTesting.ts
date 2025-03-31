@@ -11,6 +11,7 @@ export interface TestResult {
   success: boolean;
   message: string;
   timestamp: number;
+  error?: string; // Add error field to store detailed error information
 }
 
 // Complete test suite results
@@ -71,11 +72,13 @@ export const runZKProofTest = async (
       }
     } catch (error) {
       allPassed = false;
+      const errorMessage = error instanceof Error ? error.message : String(error);
       results.push({
         name: "Verify ZK Proof",
         success: false,
-        message: `Error verifying proof: ${error instanceof Error ? error.message : String(error)}`,
-        timestamp: Date.now()
+        message: `Error verifying proof`,
+        timestamp: Date.now(),
+        error: errorMessage
       });
     }
     
@@ -84,7 +87,12 @@ export const runZKProofTest = async (
       console.log(`Test 3: Verifying ZK proof with anonymous agent`);
       
       // Create a new anonymous agent specifically for verification
-      const anonymousAgent = await createAgent({} as any);
+      // Force the anonymous mode by passing an empty options object
+      const anonymousAgentOptions = { host: agent.host };
+      const anonymousAgent = new HttpAgent(anonymousAgentOptions);
+      
+      console.log("Created anonymous agent:", anonymousAgent);
+      console.log("Anonymous agent host:", anonymousAgent.host);
       
       // Make sure the localStorage has the proof available for the anonymousAgent to access
       console.log(`Checking if proof exists in localStorage: ${localStorage.getItem(`proof_${proofResponse.proofId}`) !== null}`);
@@ -93,7 +101,6 @@ export const runZKProofTest = async (
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Verify the proof with the anonymous agent
-      // We're directly using the verifyZKProof function which has been fixed to handle anonymous agents
       const anonymousVerify = await verifyZKProof(anonymousAgent, proofResponse.proofId);
       
       console.log(`Anonymous verification result: ${anonymousVerify}`);
@@ -117,21 +124,25 @@ export const runZKProofTest = async (
     } catch (error) {
       allPassed = false;
       console.error("Anonymous verification error:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       results.push({
         name: "Anonymous Verification",
         success: false,
-        message: `Error in anonymous verification: ${error instanceof Error ? error.message : String(error)}`,
-        timestamp: Date.now()
+        message: `Error in anonymous verification`,
+        timestamp: Date.now(),
+        error: errorMessage
       });
     }
     
   } catch (error) {
     allPassed = false;
+    const errorMessage = error instanceof Error ? error.message : String(error);
     results.push({
       name: "Generate ZK Proof",
       success: false,
-      message: `Error generating proof: ${error instanceof Error ? error.message : String(error)}`,
-      timestamp: Date.now()
+      message: `Error generating proof`,
+      timestamp: Date.now(),
+      error: errorMessage
     });
   }
   
