@@ -41,27 +41,37 @@ export const principalToAccountIdentifier = (principal: Principal, subAccount?: 
   // Ensure the principal is included in the account identifier
   const principalBytes = principal.toUint8Array();
   
-  // Create a new instance of sha224 hasher
-  const shaObj = sha224.create();
-  
-  // Concatenate byte arrays for hashing
+  // Use the sha224 function directly - it doesn't have a create() method
+  // First prepare our message with all the required parts
   const prefix = new Uint8Array([10]); // Prefix for account IDs
   const label = new TextEncoder().encode("account-id");
+  const defaultSubAccount = new Uint8Array(32).fill(0);
   
-  // Update the hash with all parts
-  shaObj.update(prefix);
-  shaObj.update(label);
-  shaObj.update(principalBytes);
-  shaObj.update(subAccount || new Uint8Array(32).fill(0)); // default subAccount to all 0s
+  // Concatenate all parts for hashing
+  const message = new Uint8Array(
+    prefix.length + 
+    label.length +
+    principalBytes.length +
+    (subAccount ? subAccount.length : defaultSubAccount.length)
+  );
   
-  const hash = shaObj.digest();
+  let offset = 0;
+  message.set(prefix, offset);
+  offset += prefix.length;
+  message.set(label, offset);
+  offset += label.length;
+  message.set(principalBytes, offset);
+  offset += principalBytes.length;
+  message.set(subAccount || defaultSubAccount, offset);
+  
+  // Generate hash using sha224
+  const hash = sha224(message);
   const checksum = getCrc32(hash);
   
   // Combine checksum and hash to create account ID
-  const accountId = new Uint8Array([
-    ...Array.from(checksum),
-    ...Array.from(hash)
-  ]);
+  const accountId = new Uint8Array(checksum.length + hash.length);
+  accountId.set(checksum, 0);
+  accountId.set(hash, checksum.length);
 
   console.log("Created account identifier with proper checksum:", Array.from(accountId));
   
