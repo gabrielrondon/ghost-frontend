@@ -26,6 +26,7 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
         // Create an anonymous agent (no identity)
         const anonymousAgent = await createAgent({} as any);
         setAgent(anonymousAgent);
+        console.log("Anonymous agent created successfully for verification");
       } catch (error) {
         console.error("Error initializing agent:", error);
         toast({
@@ -42,6 +43,7 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
   // Auto-verify if proofId is provided
   useEffect(() => {
     if (initialProofId && agent) {
+      console.log(`Auto-verifying proof with ID: ${initialProofId}`);
       handleVerifyProof();
     }
   }, [initialProofId, agent]);
@@ -60,7 +62,12 @@ const ZKProofVerifier = ({ proofId: initialProofId }: ZKProofVerifierProps) => {
     setVerificationResult(null);
     
     try {
+      console.log(`Verifying proof with ID: ${proofId}`);
+      console.log(`Proof exists in localStorage: ${localStorage.getItem(`proof_${proofId}`) !== null}`);
+      
       const isValid = await verifyZKProof(agent, proofId);
+      console.log(`Verification result: ${isValid}`);
+      
       setVerificationResult(isValid);
       
       toast({

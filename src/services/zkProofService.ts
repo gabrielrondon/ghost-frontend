@@ -200,6 +200,7 @@ export const generateZKProof = async (
     };
     
     // Store the proof in localStorage for verification
+    console.log(`Storing proof in localStorage with key: proof_${proofId}`);
     localStorage.setItem(`proof_${proofId}`, proofBase64);
     
     console.log("ZK proof generated successfully:", response);
@@ -228,9 +229,12 @@ export const verifyZKProof = async (
     // Retrieve proof bytes from localStorage
     const proofBase64 = localStorage.getItem(`proof_${proofId}`);
     if (!proofBase64) {
-      console.error("Proof not found in localStorage");
+      console.error(`Proof not found in localStorage for ID: ${proofId}`);
+      console.log("Available localStorage keys:", Object.keys(localStorage));
       return false;
     }
+    
+    console.log(`Found proof in localStorage for ID: ${proofId}`);
     
     // Convert base64 back to bytes
     const proofString = atob(proofBase64);
@@ -240,7 +244,9 @@ export const verifyZKProof = async (
     }
     
     const zkProofActor = await createZKProofActor(agent);
+    console.log("Calling verify_proof on canister");
     const result = await zkProofActor.verify_proof(proofBytes);
+    console.log("Verification result:", result);
     
     if ('Err' in result) {
       console.error("Error verifying proof:", result.Err);
@@ -260,4 +266,3 @@ export const verifyZKProof = async (
     return false;
   }
 };
-

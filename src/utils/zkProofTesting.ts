@@ -82,8 +82,21 @@ export const runZKProofTest = async (
     // Test 3: Verify with anonymous agent
     try {
       console.log(`Test 3: Verifying ZK proof with anonymous agent`);
+      
+      // Create a new anonymous agent specifically for verification
+      // We use the same agent creation approach as in the ZKProofVerifier component
       const anonymousAgent = await createAgent({} as any);
+      
+      // Make sure the localStorage has the proof available for the anonymousAgent to access
+      console.log(`Checking if proof exists in localStorage: ${localStorage.getItem(`proof_${proofResponse.proofId}`) !== null}`);
+      
+      // Add a short delay to ensure storage is synced
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Verify the proof with the anonymous agent
       const anonymousVerify = await verifyZKProof(anonymousAgent, proofResponse.proofId);
+      
+      console.log(`Anonymous verification result: ${anonymousVerify}`);
       
       if (anonymousVerify) {
         results.push({
@@ -103,6 +116,7 @@ export const runZKProofTest = async (
       }
     } catch (error) {
       allPassed = false;
+      console.error("Anonymous verification error:", error);
       results.push({
         name: "Anonymous Verification",
         success: false,
