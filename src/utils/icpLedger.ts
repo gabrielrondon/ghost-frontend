@@ -20,12 +20,15 @@ export interface Token {
   logo?: string;
 }
 
-// Simple IDL for the ICP Ledger canister account_balance method
+// Updated IDL for the ICP Ledger canister account_balance method
+// The account_balance method expects an object with an 'account' field that's a blob (Uint8Array)
 export const icpLedgerIDL = ({ IDL }) => {
   const AccountIdentifier = IDL.Vec(IDL.Nat8);
+  const Account = IDL.Record({ "account": AccountIdentifier });
   const Tokens = IDL.Record({ 'e8s' : IDL.Nat64 });
+  
   return IDL.Service({
-    'account_balance' : IDL.Func([AccountIdentifier], [Tokens], ['query']),
+    'account_balance' : IDL.Func([Account], [Tokens], ['query']),
   });
 };
 

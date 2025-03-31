@@ -32,7 +32,7 @@ export const fetchICPBalance = async (
 
     // Create an actor to interact with the ICP Ledger
     const icpLedger: ActorSubclass<{
-      account_balance: (accountId: number[]) => Promise<Tokens>
+      account_balance: (arg: { account: Uint8Array }) => Promise<Tokens>
     }> = await Actor.createActor(icpLedgerIDL, {
       agent,
       canisterId: LEDGER_CANISTER_ID,
@@ -40,8 +40,12 @@ export const fetchICPBalance = async (
     
     console.log("ICP Ledger actor created, calling account_balance");
     
-    // Call the account_balance method
-    const balance = await icpLedger.account_balance(accountId);
+    // Call the account_balance method with the correct format
+    // The ICP ledger expects an object with an account property
+    const balance = await icpLedger.account_balance({
+      account: new Uint8Array(accountId)
+    });
+    
     console.log("Received balance response:", balance);
     
     // Format the balance
