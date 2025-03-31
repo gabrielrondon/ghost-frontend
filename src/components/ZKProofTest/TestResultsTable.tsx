@@ -11,7 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TestResultsTableProps {
   testResults: TestSuiteResults;
@@ -50,10 +51,35 @@ const TestResultsTable = ({ testResults }: TestResultsTableProps) => {
                 {result.success ? (
                   <CheckCircle className="h-5 w-5 text-green-500" />
                 ) : (
-                  <XCircle className="h-5 w-5 text-red-500" />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <XCircle className="h-5 w-5 text-red-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs whitespace-normal">{result.message}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </TableCell>
-              <TableCell className="max-w-[200px] truncate">{result.message}</TableCell>
+              <TableCell className="max-w-[200px] overflow-hidden text-ellipsis">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="cursor-help">
+                      <div className="flex items-center">
+                        <span className="truncate">{result.message}</span>
+                        {result.message.length > 30 && (
+                          <AlertCircle className="h-3 w-3 ml-1 text-gray-400" />
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs whitespace-normal">{result.message}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
               <TableCell>{new Date(result.timestamp).toLocaleTimeString()}</TableCell>
             </TableRow>
           ))}

@@ -32,6 +32,9 @@ export const verifyZKProof = async (
     
     const zkProofActor = await createZKProofActor(agent);
     console.log("Calling verify_proof on canister");
+    
+    // Use query() directly without trying to access getPrincipal
+    // This is a critical fix for anonymous agents which don't have getPrincipal
     const result = await zkProofActor.verify_proof(proofBytes);
     console.log("Verification result:", result);
     

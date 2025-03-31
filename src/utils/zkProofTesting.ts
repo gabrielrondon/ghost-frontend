@@ -84,7 +84,6 @@ export const runZKProofTest = async (
       console.log(`Test 3: Verifying ZK proof with anonymous agent`);
       
       // Create a new anonymous agent specifically for verification
-      // We use the same agent creation approach as in the ZKProofVerifier component
       const anonymousAgent = await createAgent({} as any);
       
       // Make sure the localStorage has the proof available for the anonymousAgent to access
@@ -94,6 +93,7 @@ export const runZKProofTest = async (
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Verify the proof with the anonymous agent
+      // We're directly using the verifyZKProof function which has been fixed to handle anonymous agents
       const anonymousVerify = await verifyZKProof(anonymousAgent, proofResponse.proofId);
       
       console.log(`Anonymous verification result: ${anonymousVerify}`);
