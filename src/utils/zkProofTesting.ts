@@ -87,12 +87,13 @@ export const runZKProofTest = async (
       console.log(`Test 3: Verifying ZK proof with anonymous agent`);
       
       // Create a new anonymous agent specifically for verification
-      // Force the anonymous mode by passing an empty options object
-      const anonymousAgentOptions = { host: agent.host };
+      // Use the IC_HOST constant instead of accessing agent.host
+      const IC_HOST = "https://ic0.app"; // Define the IC host URL
+      const anonymousAgentOptions = { host: IC_HOST };
       const anonymousAgent = new HttpAgent(anonymousAgentOptions);
       
       console.log("Created anonymous agent:", anonymousAgent);
-      console.log("Anonymous agent host:", anonymousAgent.host);
+      console.log("Anonymous agent host:", IC_HOST);
       
       // Make sure the localStorage has the proof available for the anonymousAgent to access
       console.log(`Checking if proof exists in localStorage: ${localStorage.getItem(`proof_${proofResponse.proofId}`) !== null}`);
